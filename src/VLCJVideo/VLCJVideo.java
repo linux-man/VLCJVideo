@@ -6,21 +6,19 @@
  * Copyright (C) 2012 Oleg Sidorov http://4pcbr.com
  * Copyright (C) 2019 Caldas Lopes http://softlab.pt
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * 
+ * This library is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA  02111-1307  USA
- * 
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this library.  If not, see <http://www.gnu.org/licenses/>.
+ *
  * @author      Oleg Sidorov http://4pcbr.com
  * @contributor Caldas Lopes http://softlab.pt
  * @modified    31/12/2018
@@ -76,7 +74,7 @@ public class VLCJVideo extends PImage implements PConstants {
 	protected boolean ready = false;
 	protected boolean repeat = false;
 	protected float volume = 1.0f;
-	
+
 	protected MediaPlayerFactory factory;
 	protected DirectMediaPlayer mediaPlayer;
 	protected HeadlessMediaPlayer headlessMediaPlayer;
@@ -86,7 +84,7 @@ public class VLCJVideo extends PImage implements PConstants {
 
 	protected final HashMap<MediaPlayerEventType, ArrayList<Runnable>> handlers;
 	protected final Stack<Runnable> tasks;
-	
+
 	public static void setVLCLibPath(String path) {
 		vlcLibPath = path;
 	}
@@ -115,7 +113,7 @@ public class VLCJVideo extends PImage implements PConstants {
 
 	protected static void init() {
 		if(inited) return;
-		
+
 		inited = true;
 
 		if(vlcLibPath == "") {
@@ -132,10 +130,10 @@ public class VLCJVideo extends PImage implements PConstants {
 		width = 0;
 		height = 0;
 		VLCJVideo.init();
-		
+
 		tasks = new Stack<Runnable>();
 		handlers = new HashMap<MediaPlayerEventType, ArrayList<Runnable>>();
-		
+
 		initVLC(parent, options);
 	}
 
@@ -150,34 +148,34 @@ public class VLCJVideo extends PImage implements PConstants {
 		headlessMediaPlayer = factory.newHeadlessMediaPlayer();
 		bindHeadlessMediaPlayerEvents(headlessMediaPlayer);
 	}
-	
+
 	protected void scheduleTask(Runnable task) {
 		this.tasks.push(task);
 		if(isReady()) runTasks();
 	}
-	
+
 	protected void runTasks() {
 		while(!tasks.empty()) tasks.pop().run();
 	}
 
 	protected void bindHeadlessMediaPlayerEvents(HeadlessMediaPlayer hmp) {
-		
+
 		hmp.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
-			
+
 			public void mediaChanged(MediaPlayer mp, libvlc_media_t media, String mrl) {
 				setReady(false);
 			}
-			
+
 			public void error(MediaPlayer mediaPlayer) {
 				handleEvent(MediaPlayerEventType.ERROR);
       }
-			
-			public void videoOutput(MediaPlayer mp, int newCount) {	
+
+			public void videoOutput(MediaPlayer mp, int newCount) {
 				List<TrackInfo> info = mp.getTrackInfo();
 				Iterator<TrackInfo> it = info.iterator();
-				
+
 				boolean dim_parsed = false;
-				
+
 				while(it.hasNext()) {
 					TrackInfo ti = it.next();
 					if(ti instanceof VideoTrackInfo) {
@@ -201,7 +199,7 @@ public class VLCJVideo extends PImage implements PConstants {
 			}
 
 		});
-		
+
 	}
 
 	protected void initNewMediaPlayer() {
@@ -214,9 +212,9 @@ public class VLCJVideo extends PImage implements PConstants {
 		setVolume(volume);
 		runTasks();
 	}
-	
+
 	protected void bindMediaPlayerEvents(MediaPlayer mp1) {
-  
+
 		mp1.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
 
 			public void opening(MediaPlayer mp) {
@@ -311,27 +309,27 @@ public class VLCJVideo extends PImage implements PConstants {
 	public boolean isReady() {
 		return mediaPlayer != null && ready;
 	}
-	
+
 	protected void setReady(boolean ready) {
 		this.ready = ready;
 	}
-	
+
 	public boolean isPlaying() {
 		return isReady() && mediaPlayer.isPlaying();
 	}
-	
+
 	public boolean isPlayable() {
 		return isReady() && isReady() && mediaPlayer.isPlayable();
 	}
-	
+
 	public boolean isSeekable() {
 		return isReady()  && isReady() && mediaPlayer.isSeekable();
 	}
-	
+
 	public boolean canPause() {
 		return isReady() && mediaPlayer.canPause();
 	}
-	
+
 	public void loop() {
 		repeat = true;
 		if(isReady()) mediaPlayer.setRepeat(true);
@@ -341,11 +339,11 @@ public class VLCJVideo extends PImage implements PConstants {
 		repeat = false;
 		if(isReady()) mediaPlayer.setRepeat(false);
 	}
-	
+
 	public void mute() {
 		setVolume(0.0f);
 	}
-	
+
 	public void setVolume(float volume) {
 		if(volume < 0.0) volume = (float) 0.0;
 		else if(volume > 1.0) volume = (float) 1.0;
@@ -388,7 +386,7 @@ public class VLCJVideo extends PImage implements PConstants {
       pixels = data;
       updatePixels();
     }
-    
+
   }
 
   private final class TestBufferFormatCallback implements BufferFormatCallback {
@@ -399,5 +397,5 @@ public class VLCJVideo extends PImage implements PConstants {
       }
 
   }
-  
+
 }
