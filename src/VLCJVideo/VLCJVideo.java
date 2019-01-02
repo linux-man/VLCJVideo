@@ -319,11 +319,11 @@ public class VLCJVideo extends PImage implements PConstants {
 	}
 
 	public boolean isPlayable() {
-		return isReady() && isReady() && mediaPlayer.isPlayable();
+		return isReady() && mediaPlayer.isPlayable();
 	}
 
 	public boolean isSeekable() {
-		return isReady()  && isReady() && mediaPlayer.isSeekable();
+		return isReady() && mediaPlayer.isSeekable();
 	}
 
 	public boolean canPause() {
