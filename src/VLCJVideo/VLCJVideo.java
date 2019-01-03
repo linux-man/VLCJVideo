@@ -88,7 +88,7 @@ public class VLCJVideo extends PImage implements PConstants {
 			eventHandlers = new ArrayList<Runnable>();
 			handlers.put(type, eventHandlers);
 		}
-    else {
+		else {
 			eventHandlers = handlers.get(type);
 		}
 		eventHandlers.add(handler);
@@ -124,10 +124,10 @@ public class VLCJVideo extends PImage implements PConstants {
 	}
 
 	protected void initVLC(PApplet parent, String... options) {
-    String[] fullOptions = new String[options.length + 2];
-    fullOptions[0] = "-V dummy";
-    fullOptions[1] = "--no-video-title-show";
-    System.arraycopy(options, 0, fullOptions, 2, options.length);
+		String[] fullOptions = new String[options.length + 2];
+		fullOptions[0] = "-V dummy";
+		fullOptions[1] = "--no-video-title-show";
+		System.arraycopy(options, 0, fullOptions, 2, options.length);
 		this.parent = parent;
 		firstFrame = true;
 		factory = new MediaPlayerFactory(fullOptions);
@@ -154,7 +154,7 @@ public class VLCJVideo extends PImage implements PConstants {
 
 			public void error(MediaPlayer mediaPlayer) {
 				handleEvent(MediaPlayerEventType.ERROR);
-      }
+			}
 
 			public void videoOutput(MediaPlayer mp, int newCount) {
 				List<TrackInfo> info = mp.getTrackInfo();
@@ -177,7 +177,7 @@ public class VLCJVideo extends PImage implements PConstants {
 					System.out.println(String.format("Unable to parse media data, %s could not be played", filename));
 					handleEvent(MediaPlayerEventType.ERROR);
 				}
-        else {
+				else {
 					mp.stop();
 					setReady(true);
 					initNewMediaPlayer();
@@ -241,7 +241,7 @@ public class VLCJVideo extends PImage implements PConstants {
 			File f = new File(filename);
 			if(!f.exists()) filename = mrl;
 		}
-    finally {
+		finally {
 			headlessMediaPlayer.prepareMedia(filename);
 			headlessMediaPlayer.parseMedia();
 			headlessMediaPlayer.start();
@@ -250,26 +250,26 @@ public class VLCJVideo extends PImage implements PConstants {
 
 	public void play() {
 		scheduleTask(new Runnable() {
-      public void run() {
-			  if(isReady()) mediaPlayer.play();
-		  }
-    });
+			public void run() {
+				if(isReady()) mediaPlayer.play();
+			}
+		});
 	}
 
 	public void stop() {
 		scheduleTask(new Runnable() {
-      public void run() {
-			  if(isReady()) mediaPlayer.stop();
-		  }
-    });
+			public void run() {
+				if(isReady()) mediaPlayer.stop();
+			}
+		});
 	}
 
 	public void pause() {
 		scheduleTask(new Runnable() {
-      public void run() {
-			  if(isReady()) mediaPlayer.pause();
-		  }
-    });
+			public void run() {
+				if(isReady()) mediaPlayer.pause();
+			}
+		});
 	}
 
 	public float time() {
@@ -286,10 +286,10 @@ public class VLCJVideo extends PImage implements PConstants {
 
 	public void jump(final float pos) {
 		scheduleTask(new Runnable() {
-      public void run() {
-			  if(isReady()) mediaPlayer.setTime(Math.round(pos * 1000));
-		  }
-    });
+			public void run() {
+				if(isReady()) mediaPlayer.setTime(Math.round(pos * 1000));
+			}
+		});
 	}
 
 	public boolean isReady() {
@@ -352,36 +352,36 @@ public class VLCJVideo extends PImage implements PConstants {
 		try {
 			dispose();
 		}
-    finally {
+		finally {
 			super.finalize();
 		}
 	}
 
-  private final class TestRenderCallback extends RenderCallbackAdapter {
+	private final class TestRenderCallback extends RenderCallbackAdapter {
 
-    public TestRenderCallback() {
-      super(new int[width * height]);
-    }
+		public TestRenderCallback() {
+			super(new int[width * height]);
+		}
 
-    @Override
-    public void onDisplay(DirectMediaPlayer mediaPlayer, int[] data) {
-      if(firstFrame) {
-        init(width, height, parent.ARGB);
-        firstFrame = false;
-      }
-      pixels = data;
-      updatePixels();
-    }
+		@Override
+		public void onDisplay(DirectMediaPlayer mediaPlayer, int[] data) {
+			if(firstFrame) {
+				init(width, height, parent.ARGB);
+				firstFrame = false;
+			}
+			pixels = data;
+			updatePixels();
+		}
 
-  }
+	}
 
-  private final class TestBufferFormatCallback implements BufferFormatCallback {
+	private final class TestBufferFormatCallback implements BufferFormatCallback {
 
-      @Override
-      public BufferFormat getBufferFormat(int sourceWidth, int sourceHeight) {
-          return new RV32BufferFormat(width, height);
-      }
+		@Override
+		public BufferFormat getBufferFormat(int sourceWidth, int sourceHeight) {
+			return new RV32BufferFormat(width, height);
+		}
 
-  }
+	}
 
 }
