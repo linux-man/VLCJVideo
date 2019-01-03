@@ -5,6 +5,10 @@ Simple wrapper with unified processing video interface.
 
 Forked from the [VLCJVideo library](https://github.com/icanhazbroccoli/VLCJVideo) by Oleg Sidorov.
 
+## Dependencies
+
+[VLC Media Player](https://www.videolan.org/)
+
 ## Example
 
 ```
@@ -31,6 +35,11 @@ Constructor:
 
 ### VLCJVideo(this, options[])
 options is a string array (optional). By default VLCJVideo is initialized with "-V dummy" and "--no-video-title-show"
+
+```
+String[] options = {"--video-filter", "sepia:wave"};
+video = new VLCJVideo(this, options);
+```
 
 ### void openMedia(String mrl)
 
