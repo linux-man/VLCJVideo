@@ -21,8 +21,8 @@
  *
  * @author      Oleg Sidorov http://4pcbr.com
  * @contributor Caldas Lopes http://softlab.pt
- * @modified    31/12/2018
- * @version     0.3.0
+ * @modified    03/01/2019
+ * @version     0.3.1
  */
 
 package VLCJVideo;
@@ -49,6 +49,7 @@ import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
 
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
+import uk.co.caprica.vlcj.discovery.NativeDiscovery;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -57,12 +58,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
-import com.sun.jna.Native;
-import com.sun.jna.NativeLibrary;
-
 public class VLCJVideo extends PImage implements PConstants {
 
-	public final static String VERSION = "0.3.0";
+	public final static String VERSION = "0.3.1";
 
 	protected PApplet parent = null;
 
@@ -80,14 +78,9 @@ public class VLCJVideo extends PImage implements PConstants {
 	protected HeadlessMediaPlayer headlessMediaPlayer;
 
 	protected static boolean inited = false;
-	public static String vlcLibPath = "";
 
 	protected final HashMap<MediaPlayerEventType, ArrayList<Runnable>> handlers;
 	protected final Stack<Runnable> tasks;
-
-	public static void setVLCLibPath(String path) {
-		vlcLibPath = path;
-	}
 
 	public void bind(MediaPlayerEventType type, Runnable handler) {
 		ArrayList<Runnable> eventHandlers;
@@ -115,14 +108,7 @@ public class VLCJVideo extends PImage implements PConstants {
 		if(inited) return;
 
 		inited = true;
-
-		if(vlcLibPath == "") {
-			if(PApplet.platform == MACOSX) vlcLibPath = "/Applications/VLC.app/Contents/MacOS/lib";
-			else if(PApplet.platform == WINDOWS) vlcLibPath = "C:\\Program Files\\VideoLAN\\VLC";
-			else if(PApplet.platform == LINUX) vlcLibPath = "/home/linux/vlc/install/lib";
-		}
-		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), vlcLibPath);
-		Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
+		new NativeDiscovery().discover();
 	}
 
 	public VLCJVideo(PApplet parent, String... options) {

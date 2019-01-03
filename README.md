@@ -71,5 +71,3 @@ volume between 0.0 and 1.0
 ### void bind(MediaPlayerEventType type, Runnable handler)
 See "Events" example
 
-### void setVLCLibPath(String path)
-
