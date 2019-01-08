@@ -21,8 +21,8 @@
  *
  * @author      Oleg Sidorov http://4pcbr.com
  * @contributor Caldas Lopes http://softlab.pt
- * @modified    03/01/2019
- * @version     0.3.1
+ * @modified    08/01/2019
+ * @version     0.3.2
  */
 
 package VLCJVideo;
@@ -32,7 +32,6 @@ import processing.core.PConstants;
 import processing.core.PImage;
 
 import uk.co.caprica.vlcj.binding.LibVlc;
-import uk.co.caprica.vlcj.player.MediaMeta;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
@@ -60,7 +59,7 @@ import java.util.Stack;
 
 public class VLCJVideo extends PImage implements PConstants {
 
-	public final static String VERSION = "0.3.1";
+	public final static String VERSION = "0.3.2";
 
 	protected PApplet parent = null;
 
@@ -72,6 +71,7 @@ public class VLCJVideo extends PImage implements PConstants {
 	protected boolean ready = false;
 	protected boolean repeat = false;
 	protected float volume = 1.0f;
+	protected long length = 0;
 
 	protected MediaPlayerFactory factory;
 	protected DirectMediaPlayer mediaPlayer;
@@ -113,8 +113,6 @@ public class VLCJVideo extends PImage implements PConstants {
 
 	public VLCJVideo(PApplet parent, String... options) {
 		super(0, 0, PApplet.RGB);
-		width = 0;
-		height = 0;
 		VLCJVideo.init();
 
 		tasks = new Stack<Runnable>();
@@ -156,10 +154,11 @@ public class VLCJVideo extends PImage implements PConstants {
 				handleEvent(MediaPlayerEventType.ERROR);
 			}
 
-			public void videoOutput(MediaPlayer mp, int newCount) {
+			public void playing(MediaPlayer mp) {
 				List<TrackInfo> info = mp.getTrackInfo();
 				Iterator<TrackInfo> it = info.iterator();
 
+				length = mp.getLength();
 				boolean dim_parsed = false;
 
 				while(it.hasNext()) {
@@ -173,11 +172,13 @@ public class VLCJVideo extends PImage implements PConstants {
 						break;
 					}
 				}
-				if(!dim_parsed) {
-					System.out.println(String.format("Unable to parse media data, %s could not be played", filename));
+				if(length <= 0) {
+					System.err.println(String.format("Unable to parse media data, %s could not be played", filename));
 					handleEvent(MediaPlayerEventType.ERROR);
+					mp.stop();
 				}
 				else {
+					if(!dim_parsed)System.out.println(String.format("Unable to get video dimensions. Is %s an audio file?", filename));
 					mp.stop();
 					setReady(true);
 					initNewMediaPlayer();
@@ -242,6 +243,9 @@ public class VLCJVideo extends PImage implements PConstants {
 			if(!f.exists()) filename = mrl;
 		}
 		finally {
+			length = 0;
+			width = 0;
+			height = 0;
 			headlessMediaPlayer.prepareMedia(filename);
 			headlessMediaPlayer.parseMedia();
 			headlessMediaPlayer.start();
@@ -277,7 +281,7 @@ public class VLCJVideo extends PImage implements PConstants {
 	}
 
 	public float duration() {
-		return isReady() ? (float) ((float) mediaPlayer.getLength() / 1000.0) : 0.0f;
+		return (float) ((float) length / 1000.0);
 	}
 
 	public float volume() {
