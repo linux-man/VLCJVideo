@@ -1,3 +1,5 @@
+//Using the keyboard: SPACE to pause, ENTER to stop, Cursor keys to jump and change volume
+//How to bind Events
 import VLCJVideo.*;
 
 import uk.co.caprica.vlcj.player.events.MediaPlayerEventType;

@@ -9,6 +9,8 @@ Forked from the [VLCJVideo library](https://github.com/icanhazbroccoli/VLCJVideo
 
 [VLC Media Player](https://www.videolan.org/)
 
+Requires VLC >= 3.06. It may not work with older versions.
+
 ## Example
 
 ```

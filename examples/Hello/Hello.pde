@@ -1,3 +1,4 @@
+//A basic example
 import VLCJVideo.*;
 
 VLCJVideo video;

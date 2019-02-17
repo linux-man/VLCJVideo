@@ -21,8 +21,8 @@
  *
  * @author      Oleg Sidorov http://4pcbr.com
  * @contributor Caldas Lopes http://softlab.pt
- * @modified    08/01/2019
- * @version     0.3.2
+ * @modified    17/02/2019
+ * @version     0.3.3
  */
 
 package VLCJVideo;
@@ -59,7 +59,7 @@ import java.util.Stack;
 
 public class VLCJVideo extends PImage implements PConstants {
 
-	public final static String VERSION = "0.3.2";
+	public final static String VERSION = "0.3.3";
 
 	protected PApplet parent = null;
 

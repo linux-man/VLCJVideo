@@ -1,3 +1,5 @@
+//How to use vlcj AudioMediaPlayerComponent to play audio
+
 import VLCJVideo.*;
 import uk.co.caprica.vlcj.component.AudioMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.MediaMeta;
