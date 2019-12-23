@@ -3,13 +3,11 @@
 
 Simple wrapper with unified processing video interface.
 
-Forked from the [VLCJVideo library](https://github.com/icanhazbroccoli/VLCJVideo) by Oleg Sidorov.
-
 ## Dependencies
 
-[VLC Media Player](https://www.videolan.org/)
+[vlcj-4](http://capricasoftware.co.uk/projects/vlcj)
 
-Requires VLC >= 3.06. It may not work with older versions.
+[VLC Media Player](https://www.videolan.org/) 3.x or later.
 
 ## Example
 
@@ -21,9 +19,7 @@ VLCJVideo video;
 void setup() {
   size(640, 360);
   video = new VLCJVideo(this);
-  video.openMedia("https://www.sample-videos.com/video123/mp4/360/big_buck_bunny_360p_30mb.mp4");
-  video.loop();
-  video.play();
+  video.openAndPlay("https://www.sample-videos.com/video123/mp4/360/big_buck_bunny_360p_30mb.mp4");
 }
 
 void draw() {
@@ -36,14 +32,16 @@ void draw() {
 Constructor:
 
 ### VLCJVideo(this, options[])
-options is a string array (optional). By default VLCJVideo is initialized with "-V dummy" and "--no-video-title-show"
+options is a string array (optional).
 
 ```
 String[] options = {"--video-filter", "sepia:wave"};
 video = new VLCJVideo(this, options);
 ```
 
-### void openMedia(String mrl)
+### void open(String mrl)
+
+### void openAndPlay(String mrl)
 
 ### void play()
 
@@ -51,27 +49,45 @@ video = new VLCJVideo(this, options);
 
 ### void pause()
 
-### void jump(float pos)
-pos in seconds
+### void setPause(boolean pause)
 
-### void loop()
+### void setTime(long time)
+time in miliseconds
 
-### void noLoop()
+### void setPosition(float position)
+between 0.0 and 1.0 as percentage
 
-### void mute()
+### void setRepeat(boolean repeat)
+
+### void setVolume(int volume)
+0-200 as percentage
+
+### void setMute(boolean mute)
 
 ### void setVolume(float volume)
 volume between 0.0 and 1.0
 
-### float time()
+### State state()
+See "states" example
 
-### float duration()
+### long time()
 
-### float volume()
+### float position()
+
+### long duration()
+
+### long length()
+same as duration()
+
+### int volume()
 
 ### boolean isReady()
 
 ### boolean isPlaying()
+
+### boolean isPaused()
+
+### boolean isS()
 
 ### boolean isPlayable()
 
@@ -79,6 +95,12 @@ volume between 0.0 and 1.0
 
 ### boolean canPause()
 
+### boolean getRepeat()
+
+### boolean isMute()
+
 ### void bind(MediaPlayerEventType type, Runnable handler)
-See "Events" example
+See "bind" example
+
+### void dispose()
 
