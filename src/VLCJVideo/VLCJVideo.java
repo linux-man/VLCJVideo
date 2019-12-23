@@ -316,13 +316,7 @@ public class VLCJVideo extends PImage implements PConstants {
 */
     });
   }
-/*
-  private void runTask(Runnable task) {
-    this.tasks.push(task);
-    //while(!isReady());
-    if(isReady()) while(!tasks.empty()) tasks.pop().run();
-  }
-*/
+
 //-------------------------------- CONSTRUCTOR -------------------------------//
 
   public VLCJVideo(PApplet parent, String... options) {
