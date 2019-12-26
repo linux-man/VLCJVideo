@@ -64,17 +64,16 @@ between 0.0 and 1.0 as percentage
 
 ### void setMute(boolean mute)
 
-### void setVolume(float volume)
-volume between 0.0 and 1.0
-
 ### State state()
 See "states" example
 
 ### long time()
+In miliseconds
 
 ### float position()
 
 ### long duration()
+In miliseconds
 
 ### long length()
 same as duration()
@@ -87,7 +86,7 @@ same as duration()
 
 ### boolean isPaused()
 
-### boolean isS()
+### boolean isStopped()
 
 ### boolean isPlayable()
 
