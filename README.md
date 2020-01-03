@@ -103,3 +103,35 @@ See "bind" example
 
 ### void dispose()
 
+## Equalizer Methods
+
+### void setEqualizer()
+
+### void setEqualizer(String presetName)
+
+### void setEqualizer(int presetIndex)
+
+### void noEqualizer()
+
+### void setPreamp(float newPreamp)
+
+### void setAmp(int index, float newAmp)
+
+### void setAmps(float[] newAmps)
+
+### boolean hasEqualizer()
+
+### String[] presets()
+
+### boolean isPreset(String name)
+
+### int presetIndex()
+
+### String preset()
+
+### float preamp()
+
+### float amp(int index)
+
+### float[] amps()
+

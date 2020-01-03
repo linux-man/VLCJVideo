@@ -3,7 +3,7 @@
  * VLCJ binding for Processing.
  * http://github.com/linux-man/VLCJVideo
  *
- * Copyright (C) 2019 Caldas Lopes http://softlab.pt
+ * Copyright (C) 2020 Caldas Lopes http://softlab.pt
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -19,8 +19,8 @@
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @author      Caldas Lopes http://softlab.pt
- * @modified    23/12/2019
- * @version     0.4.0
+ * @modified    03/01/2020
+ * @version     0.4.1
  */
 
 package VLCJVideo;
@@ -40,7 +40,7 @@ import uk.co.caprica.vlcj.player.embedded.videosurface.callback.format.RV32Buffe
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.base.State;
 import uk.co.caprica.vlcj.media.MediaRef;
-//import uk.co.caprica.vlcj.media.TrackType;
+//import uk.co.caprica.vlcj.media.TrackType; //For elementaryStream Events
 
 import java.io.File;
 import java.nio.ByteBuffer;
@@ -87,12 +87,13 @@ public class VLCJVideo extends PImage implements PConstants {
 		  VOLUME_CHANGED                 //The volume changed
 		}
 
-  public final static String VERSION = "0.4.0";
+  public final static String VERSION = "0.4.1";
 
   protected PApplet parent = null;
 
   protected String filename;
   protected boolean firstFrame;
+  protected int presetIndex = -1;
 
   protected MediaPlayerFactory factory;
   protected EmbeddedMediaPlayer mediaPlayer;
@@ -368,7 +369,12 @@ public class VLCJVideo extends PImage implements PConstants {
   }
 /*
   public void start() {
-    if(isReady()) mediaPlayer.controls().start();
+    mainExec.execute(new Runnable() {
+      public void run() {
+        while(!isReady());
+        mediaPlayer.controls().start();
+      }
+    });
   }
 */
   public void play() {
@@ -419,12 +425,12 @@ public class VLCJVideo extends PImage implements PConstants {
     });
   }
 
-  public void setPosition(float pos) {
-    final float position = Math.max(0, Math.min(1, pos));
+  public void setPosition(float position) {
+    final float pos = Math.max(0, Math.min(1, position));
     mainExec.execute(new Runnable() {
       public void run() {
         while(!isReady());
-        mediaPlayer.controls().setPosition(position);
+        mediaPlayer.controls().setPosition(pos);
       }
     });    
   }
@@ -438,12 +444,12 @@ public class VLCJVideo extends PImage implements PConstants {
     });    
   }
 
-  public void setVolume(int vol) {
-    final int volume = Math.max(0, Math.min(200, vol));
+  public void setVolume(int volume) {
+    final int vol = Math.max(0, Math.min(200, volume));
     volExec.execute(new Runnable() {
       public void run() {
-        while(volume() != volume) {
-          mediaPlayer.audio().setVolume(Math.max(0, Math.min(200, volume)));
+        while(volume() != vol) {
+          mediaPlayer.audio().setVolume(vol);
         }
       }
     });
@@ -459,7 +465,7 @@ public class VLCJVideo extends PImage implements PConstants {
   }
 
   public State state() {
-    return mediaPlayer.status().state();
+    return mediaPlayer != null ? mediaPlayer.status().state() : State.NOTHING_SPECIAL;
     //return mediaPlayer.media().info().state(); //Another way
   }
 
@@ -517,6 +523,97 @@ public class VLCJVideo extends PImage implements PConstants {
 
   public boolean isMute() {
     return mediaPlayer != null && mediaPlayer.audio().isMute();
+  }
+
+//----------------------------  EQUALIZER METHODS ----------------------------//
+
+  public void setEqualizer() {
+    mediaPlayer.audio().setEqualizer(factory.equalizer().newEqualizer());
+    presetIndex = -1;
+  }
+
+  public void setEqualizer(String presetName) {
+    int i = factory.equalizer().presets().indexOf(presetName);
+    if(i >= 0) {
+      mediaPlayer.audio().setEqualizer(factory.equalizer().newEqualizer(factory.equalizer().presets().get(i)));
+      presetIndex = i;
+    }
+    else setEqualizer();
+  }
+
+  public void setEqualizer(int presetIndex) {
+    if(presetIndex >= 0 && presetIndex < factory.equalizer().presets().size()) {
+      mediaPlayer.audio().setEqualizer(factory.equalizer().newEqualizer(factory.equalizer().presets().get(presetIndex)));
+      this.presetIndex = presetIndex;
+    }
+    else setEqualizer();
+  }
+
+  public void noEqualizer() {
+    mediaPlayer.audio().setEqualizer(null);
+    presetIndex = -1;
+  }
+
+  public void setPreamp(float newPreamp) {
+    if(hasEqualizer()) {
+      newPreamp = Math.max(-20, Math.min(20, newPreamp));
+      if(preamp() != newPreamp) {
+        mediaPlayer.audio().equalizer().setPreamp(newPreamp);
+        presetIndex = -1;
+      }
+    }
+  }
+
+  public void setAmp(int index, float newAmp) {
+    if(hasEqualizer()) {
+      newAmp = Math.max(-20, Math.min(20, newAmp));
+      if(amp(index) != newAmp) {
+        mediaPlayer.audio().equalizer().setAmp(index, newAmp);
+        presetIndex = -1;
+      }
+    }
+  }
+
+  public void setAmps(float[] newAmps) {
+    if(hasEqualizer()) {
+      for(int n = 0; n < newAmps.length; n++) newAmps[n] = Math.max(-20, Math.min(20, newAmps[n]));
+      if(!Arrays.equals(amps(), newAmps)) {
+        mediaPlayer.audio().equalizer().setAmps(newAmps);
+        presetIndex = -1;
+      }
+    }
+  }
+
+  public boolean hasEqualizer() {
+    return mediaPlayer.audio().equalizer() != null;
+  }
+
+  public String[] presets() {
+    return factory.equalizer().presets().toArray(new String[0]);
+  }
+
+  public boolean isPreset(String name) {
+    return factory.equalizer().presets().contains(name);
+  }
+
+  public int presetIndex() {
+    return presetIndex;
+  }
+
+  public String preset() {
+    return presetIndex >= 0 ? factory.equalizer().presets().get(presetIndex) : "None";
+  }
+
+  public float preamp() {
+    return hasEqualizer() ? mediaPlayer.audio().equalizer().preamp() : 0;
+  }
+
+  public float amp(int index) {
+    return hasEqualizer() ? mediaPlayer.audio().equalizer().amp(index) : 0;
+  }
+
+  public float[] amps() {
+    return hasEqualizer() ? mediaPlayer.audio().equalizer().amps() : new float[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   }
 
 }
