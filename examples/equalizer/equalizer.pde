@@ -13,7 +13,7 @@ void setup() {
   textSize(14);
   video = new VLCJVideo(this);
   video.setEqualizer(preset);
-  video.openAndPlay("https://www.sample-videos.com/video123/mp4/360/big_buck_bunny_360p_30mb.mp4");
+  video.openAndPlay("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4");
   print("Equalizer Presets: ");
   println(video.presets());
   println("Active Equalizer Preset: " + video.preset());
@@ -23,7 +23,7 @@ void setup() {
 
 void draw() {
   background(0);
-  image(video, 0, 0);
+  image(video, 0, 0, width, height);
   text("Press CURSOR KEYS, 1 to 0 ,Q to P, J and M (Bands), A and Z (PreAmp), S and D (Volume)", 5, 20);
 }
 
